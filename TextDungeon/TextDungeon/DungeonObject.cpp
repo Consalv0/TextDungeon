@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 
-DungeonObject::DungeonObject()
-{
+DungeonObject::DungeonObject() {
+	name = "&rDUNGEON OBJECT&x";
 }
 
 

@@ -25,31 +25,67 @@ void Writter::SetCursor(int x, int y, bool restrict) {
 	Console::SetCursorPosition(x, y);
 }
 
-void Writter::WriteAt(String^ s, int x, int y) {
+String^ Writter::RemoveColorSyntax(String ^s) {
+	if (s->Contains("&")) {
+		array<String^> ^sections = s->Split(gcnew array<Char>{'&'}, StringSplitOptions::None);
+		s = "";
+
+		Collections::IEnumerator^ myEnum = sections->GetEnumerator();
+		while (myEnum->MoveNext()) {
+			String^ entry = safe_cast<String^>(myEnum->Current);
+			entry = entry->Remove(0, 1);
+			s = s->Insert(0, entry);
+		}
+		s = s->Insert(0, " ");
+	}
+	return s;
+}
+
+void Writter::WriteWithColors(String ^s) {
+	if (s->Contains("&")) {
+		array<String^> ^sections = s->Split(gcnew array<Char>{'&'}, StringSplitOptions::None);
+
+		Collections::IEnumerator^ myEnum = sections->GetEnumerator();
+		while (myEnum->MoveNext()) {
+			String^ entry = safe_cast<String^>(myEnum->Current);
+			if (entry->Substring(0, 1) == "r") { Console::ForegroundColor = ConsoleColor::Red; } else
+			if (entry->Substring(0, 1) == "g") { Console::ForegroundColor = ConsoleColor::Green; } else
+			if (entry->Substring(0, 1) == "b") { Console::ForegroundColor = ConsoleColor::Cyan; } else
+			if (entry->Substring(0, 1) == "y") { Console::ForegroundColor = ConsoleColor::Yellow; } else
+			if (entry->Substring(0, 1) == "m") { Console::ForegroundColor = ConsoleColor::Magenta; } else
+			if (entry->Substring(0, 1) == "n") { Console::ForegroundColor = ConsoleColor::Gray; } else
+			if (entry->Substring(0, 1) == "w") { Console::ForegroundColor = ConsoleColor::White; } else
+			if (entry->Substring(0, 1) == "x") { Console::ResetColor(); } else { Console::Write(entry); continue; }
+			entry = entry->Remove(0, 1);
+			Console::Write(entry);
+			Console::ResetColor();
+		}
+	} else {
+		Console::Write(s);
+	}
+}
+
+void Writter::WriteAt(String ^s, int x, int y) {
 	x %= Console::BufferWidth - s->Length;
 	y %= Console::BufferHeight;
 	Console::SetCursorPosition(origCol + x, origRow + y);
-	Console::Write(s);
+	Writter::WriteWithColors(s);
 }
+
 
 void Writter::WriteCenteredAt(String^ s, int y) {
 	y %= Console::BufferHeight;
-	Writter::SetCursor(origRow + (Console::BufferWidth - s->Length) * 0.5, origCol + y, false);
-	Console::Write(s);
-}
-
-array<String^>^ splitString(String^ strg) {
-	array<String^> ^result;
-	result = strg->Split(gcnew array<Char>{'\n', ' '}, StringSplitOptions::None);
-	return result;
+	Writter::SetCursor(origRow + (Console::BufferWidth - Writter::RemoveColorSyntax(s)->Length) * 0.5, origCol + y, false);
+	Writter::WriteWithColors(s);
 }
 
 void Writter::WriteCenteredAt(String^ s, int x, int y, int width, int height) {
 	array<String^> ^words;
 	String^ message = " ";
-	words = splitString(s);
+	words = s->Split(gcnew array<Char>{'\n', ' '}, StringSplitOptions::None);
 	int i = 0;
 	int rows = (s->Length / width + s->Split('\n')->Length) * 0.5;
+	if (rows * 2 > height) { rows = height / 2; }
 
 	Collections::IEnumerator^ myEnum = words->GetEnumerator();
 	while (myEnum->MoveNext()) {
@@ -57,34 +93,35 @@ void Writter::WriteCenteredAt(String^ s, int x, int y, int width, int height) {
 		String^ entry = safe_cast<String^>(myEnum->Current);
 		if (entry->CompareTo("") == 0) {
 			if (message->CompareTo("") != 0) {
-				Writter::SetCursor(origRow + x + (width - message->Length) * 0.5,
+				Writter::SetCursor(origRow + x + (width - Writter::RemoveColorSyntax(message)->Length) * 0.5,
 					origCol + y + height * 0.5 + i - rows, true);
-				Console::Write(message);
+				Writter::WriteWithColors(message);
 				message = "";
 			}
 			i++;
 		}
 		if (message->Length + entry->Length + 1 >= width) {
-			Writter::SetCursor(origRow + x + (width - message->Length) * 0.5,
+			Writter::SetCursor(origRow + x + (width - Writter::RemoveColorSyntax(message)->Length) * 0.5,
 				origCol + y + height * 0.5 + i - rows, true);
-			Console::Write(message);
+			Writter::WriteWithColors(message);
 			message = "";
 			i++;
 		}
 		message = String::Concat(message + " ", entry);
 	}
 
-	Writter::SetCursor(origRow + x + (width - message->Length) * 0.5,
+	Writter::SetCursor(origRow + x + (width - Writter::RemoveColorSyntax(message)->Length) * 0.5,
 		origCol + y + height * 0.5 + i - rows, true);
-	Console::Write(message);
+	Writter::WriteWithColors(message);
 }
 
 void Writter::WriteLeftAt(String^ s, int x, int y, int width, int height) {
 	array<String^> ^words;
 	String^ message = " ";
-	words = splitString(s);
+	words = s->Split(gcnew array<Char>{'\n', ' '}, StringSplitOptions::None);
 	int i = 0;
 	int rows = (s->Length / width + s->Split('\n')->Length) * 0.5;
+	if (rows * 2 > height) { rows = height / 2; }
 
 	Collections::IEnumerator^ myEnum = words->GetEnumerator();
 	while (myEnum->MoveNext()) {
@@ -93,14 +130,14 @@ void Writter::WriteLeftAt(String^ s, int x, int y, int width, int height) {
 		if (entry->CompareTo("") == 0) {
 			if (message->CompareTo("") != 0) {
 				Writter::SetCursor(origRow + x, origCol + y + height * 0.5 + i - rows, true);
-				Console::Write(message);
+				Writter::WriteWithColors(message);
 				message = "";
 			}
 			i++;
 		}
 		if (message->Length + entry->Length + 1 >= width) {
 			Writter::SetCursor(origRow + x, origCol + y + height * 0.5 + i - rows, true);
-			Console::Write(message);
+			Writter::WriteWithColors(message);
 			message = "";
 			i++;
 		}
@@ -108,15 +145,16 @@ void Writter::WriteLeftAt(String^ s, int x, int y, int width, int height) {
 	}
 
 	Writter::SetCursor(origRow + x, origCol + y + height * 0.5 + i - rows, true);
-	Console::Write(message);
+	Writter::WriteWithColors(message);
 }
 
 void Writter::WriteRightAt(String^ s, int x, int y, int width, int height) {
 	array<String^> ^words;
 	String^ message = "";
-	words = splitString(s);
+	words = s->Split(gcnew array<Char>{'\n', ' '}, StringSplitOptions::None);
 	int i = 0;
 	int rows = (s->Length / width + s->Split('\n')->Length) * 0.5;
+	if (rows * 2 > height) { rows = height / 2; }
 
   Collections::IEnumerator^ myEnum = words->GetEnumerator();
 	while (myEnum->MoveNext()) {
@@ -124,24 +162,24 @@ void Writter::WriteRightAt(String^ s, int x, int y, int width, int height) {
 		String^ entry = safe_cast<String^>(myEnum->Current);
 		if (entry->CompareTo("") == 0) {
 			if (message->CompareTo("") != 0) {
-				Writter::SetCursor(origRow + x + width - message->Length,
+				Writter::SetCursor(origRow + x + width - Writter::RemoveColorSyntax(message)->Length,
 					origCol + y + height * 0.5 + i - rows, true);
-				Console::Write(message);
+				Writter::WriteWithColors(message);
 				message = "";
 			}
 			i++;
 		}
 		if (message->Length + entry->Length + 1 >= width) {
-			Writter::SetCursor(origRow + x + width - message->Length,
+			Writter::SetCursor(origRow + x + width - Writter::RemoveColorSyntax(message)->Length,
 				origCol + y + height * 0.5 + i - rows, true);
-			Console::Write(message);
+			Writter::WriteWithColors(message);
 			message = "";
 			i++;
 		}
 		message = String::Concat(message + " ", entry);
 	}
 
-	Writter::SetCursor(origRow + x + width - message->Length,
+	Writter::SetCursor(origRow + x + width - Writter::RemoveColorSyntax(message)->Length,
 		origCol + y + height * 0.5 + i - rows, true);
-	Console::Write(message);
+	Writter::WriteWithColors(message);
 }

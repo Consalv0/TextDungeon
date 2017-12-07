@@ -1,15 +1,17 @@
 #pragma once
 
-class Room {
+ref class Door;
+
+ref class Room {
 public:
 	/**  Constructors  **/
-	Room(Door doors[], DungeonObject objects[], String^ desc);
+	Room(array<Door^> ^doors, array<DungeonObject^> ^objects, String ^desc);
 	Room();
 
 	/**  Variables  **/
-	Door *doors;
-	DungeonObject *objects;
-	gcroot<String^> description;
+	array<Door^> ^doors;
+	array<DungeonObject^> ^objects;
+	String ^description;
 
 	/** Methods **/
 	void printDescription();

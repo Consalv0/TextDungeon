@@ -1,8 +1,14 @@
 #pragma once
-class DungeonObject
-{
+
+ref class DungeonObject {
 public:
+	/*** Constructors ***/
 	DungeonObject();
 	~DungeonObject();
+
+	/*** Variables ***/
+	String^ name;
+
+	/*** Methods ***/
 };
 
