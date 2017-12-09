@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-Key::Key(Door ^door, String ^name) {
+Key::Key(String ^name) {
 	this->name = name;
 }
 

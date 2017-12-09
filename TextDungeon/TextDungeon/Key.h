@@ -4,7 +4,7 @@ ref class Door;
 
 ref class Key : public DungeonObject {
 public:
-	Key(Door ^door, String ^name);
+	Key(String ^name);
 	Key();
 	~Key();
 };

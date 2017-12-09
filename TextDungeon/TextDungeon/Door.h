@@ -3,7 +3,9 @@
 ref class Door {
 public:
 	/*** Constructors ***/
-	Door(Room ^to, Room ^from, DungeonObject ^key, String^ name);
+	Door(Room ^%to, Room ^%from, DungeonObject ^%key, String^ name);
+	Door(String^ name, DungeonObject ^%key);
+	Door(String^ name);
 	Door();
 	~Door();
 
