@@ -26,13 +26,14 @@ void Writter::SetCursor(int x, int y, bool restrict) {
 }
 
 String^ Writter::RemoveColorSyntax(String ^s) {
-	if (s->Contains("&")) {
+	if (s->Contains("&") >= 0) {
 		array<String^> ^sections = s->Split(gcnew array<Char>{'&'}, StringSplitOptions::None);
 		s = "";
 
 		Collections::IEnumerator^ myEnum = sections->GetEnumerator();
 		while (myEnum->MoveNext()) {
 			String^ entry = safe_cast<String^>(myEnum->Current);
+			if (entry->Length == 0) continue;
 			entry = entry->Remove(0, 1);
 			s = s->Insert(0, entry);
 		}
@@ -42,23 +43,31 @@ String^ Writter::RemoveColorSyntax(String ^s) {
 }
 
 void Writter::WriteWithColors(String ^s) {
-	if (s->Contains("&")) {
+	if (s->Contains("&") >= 0) {
 		array<String^> ^sections = s->Split(gcnew array<Char>{'&'}, StringSplitOptions::None);
 
 		Collections::IEnumerator^ myEnum = sections->GetEnumerator();
 		while (myEnum->MoveNext()) {
 			String^ entry = safe_cast<String^>(myEnum->Current);
-			if (entry->Substring(0, 1) == "r") { Console::ForegroundColor = ConsoleColor::Red; } else
-			if (entry->Substring(0, 1) == "g") { Console::ForegroundColor = ConsoleColor::Green; } else
-			if (entry->Substring(0, 1) == "b") { Console::ForegroundColor = ConsoleColor::Cyan; } else
-			if (entry->Substring(0, 1) == "y") { Console::ForegroundColor = ConsoleColor::Yellow; } else
-			if (entry->Substring(0, 1) == "m") { Console::ForegroundColor = ConsoleColor::Magenta; } else
-			if (entry->Substring(0, 1) == "n") { Console::ForegroundColor = ConsoleColor::Gray; } else
-			if (entry->Substring(0, 1) == "w") { Console::ForegroundColor = ConsoleColor::White; } else
-			if (entry->Substring(0, 1) == "x") { Console::ResetColor(); } else { Console::Write(entry); continue; }
+			if (entry->Length == 0) { Console::Write("&" + entry); continue; }
+			if (entry->Substring(0, 1) == "r") { colors->Push(ConsoleColor::Red); } else
+			if (entry->Substring(0, 1) == "g") { colors->Push(ConsoleColor::Green); } else
+			if (entry->Substring(0, 1) == "b") { colors->Push(ConsoleColor::Cyan); } else
+			if (entry->Substring(0, 1) == "y") { colors->Push(ConsoleColor::Yellow); } else
+			if (entry->Substring(0, 1) == "m") { colors->Push(ConsoleColor::Magenta); } else
+			if (entry->Substring(0, 1) == "n") { colors->Push(ConsoleColor::Gray); } else
+			if (entry->Substring(0, 1) == "w") { colors->Push(ConsoleColor::White); } else
+			if (entry->Substring(0, 1) == "x") { if (colors->Count > 0) colors->Pop(); } else
+			if (entry->Substring(0, 1) == "!") { Console::ResetColor(); colors->Clear(); } else
+			if (entry->Substring(0, 1) == " ") { Console::Write(entry); continue; } else
+			if (entry->Substring(0, 1) == "&") { Console::Write("&" + entry); continue; } else { Console::Write("&" + entry); continue; }
 			entry = entry->Remove(0, 1);
+			if (colors->Count > 0) {
+				Console::ForegroundColor = (ConsoleColor)colors->Peek();
+			} else {
+				Console::ResetColor();
+			}
 			Console::Write(entry);
-			Console::ResetColor();
 		}
 	} else {
 		Console::Write(s);
@@ -100,7 +109,7 @@ void Writter::WriteCenteredAt(String^ s, int x, int y, int width, int height) {
 			}
 			i++;
 		}
-		if (message->Length + entry->Length + 1 >= width) {
+		if (Writter::RemoveColorSyntax(message)->Length + entry->Length + 1 >= width) {
 			Writter::SetCursor(origRow + x + (width - Writter::RemoveColorSyntax(message)->Length) * 0.5,
 				origCol + y + height * 0.5 + i - rows, true);
 			Writter::WriteWithColors(message);

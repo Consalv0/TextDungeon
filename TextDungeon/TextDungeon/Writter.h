@@ -1,6 +1,6 @@
 #pragma once
 
-ref class Writter {
+ref class Writter abstract sealed {
 public:
 	static int origCol, origRow;
 	static void ShowCursor(bool showFlag);
@@ -12,4 +12,6 @@ public:
 	static void WriteCenteredAt(String ^s, int x, int y, int width, int height);
 	static void WriteLeftAt(String ^s, int x, int y, int width, int height);
 	static void WriteRightAt(String ^s, int x, int y, int width, int height);
+
+	static Collections::Stack ^colors = gcnew Collections::Stack();
 };
