@@ -1,6 +1,6 @@
 #pragma once
 
-public ref class Dungeon abstract sealed {
+ref class Dungeon abstract sealed {
 public:
 	static array<DungeonObject^> ^objects = gcnew array<DungeonObject^> {
 	/* Keys */
@@ -16,7 +16,7 @@ public:
 
 	static array<Door^> ^doors = gcnew array<Door^> {
 		gcnew Door("&rDOOR MADE OF STEEL&x",      objects[0]), // 00
-		gcnew Door("&rDOOR MADE OF ROOTS&x",      objects[1]), // 01
+		gcnew Door("&rDOOR COVERED OF ROOTS&x",   objects[1]), // 01
 		gcnew Door("&rDOOR WITH DRESSED STONE&x", objects[2]), // 02
 		gcnew Door("&rDOOR MADE OF LAVA&x",       objects[3]), // 03
 		gcnew Door("&rDOOR MADE OF CRYSTALS&x",   objects[4]), // 04
@@ -61,4 +61,36 @@ public:
 		gcnew Room(gcnew array<Door^>{doors[5 ], doors[4 ], doors[13]}, gcnew array<DungeonObject^>{objects[ 3]}, ""), // 18
 		gcnew Room(gcnew array<Door^>{doors[19]                      }, gcnew array<DungeonObject^>{objects[ 1]}, ""), // 19
 	};
+
+	static Door^ GetDoor(String ^name, Room ^room) {
+		if (room == nullptr) return nullptr;
+		int count = 0;
+		Door ^door;
+		for (int i = 0; i < room->doors->Length; i++) {
+			array<String^> ^doorname = Writter::RemoveSyntax(Writter::RemoveColorSyntax(room->doors[i]->name))->Split(gcnew array<Char>{' '}, StringSplitOptions::RemoveEmptyEntries);
+			if (Writter::Contains(name, doorname, 1)) {
+				count++;
+				door = room->doors[i];
+			}
+		}
+		if (count == 0) {
+			Console::Clear();
+			Writter::WriteCenteredAt("There's no door or YOU are not specific enough with that kind of description, &rYOU feel bad.&x", int(Console::BufferWidth * .2), 0, int(Console::BufferWidth * .6F), Console::BufferHeight);
+			Writter::ShowCursor(false);
+			Console::ReadKey();
+			Console::Clear();
+			return nullptr;
+		}
+		if (count > 1) {
+			Console::Clear();
+			Writter::WriteCenteredAt("&rYOU can't open more than one door at the same time you are not any Good!&x", int(Console::BufferWidth * .2), 0,
+				int(Console::BufferWidth * .6F), Console::BufferHeight);
+			Writter::ShowCursor(false);
+			Console::ReadKey();
+			Console::Clear();
+			return nullptr;
+		}
+		return door;
+	}
+
 };

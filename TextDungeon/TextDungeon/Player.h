@@ -10,5 +10,6 @@ public:
 	Room^ room;
 
 	void printScreenInfo();
+	void parseCommand(String ^command);
 };
 

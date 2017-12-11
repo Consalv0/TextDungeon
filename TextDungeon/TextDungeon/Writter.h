@@ -6,6 +6,9 @@ public:
 	static void ShowCursor(bool showFlag);
 	static void SetCursor(int x, int y, bool restrict);
 	static String^ RemoveColorSyntax(String ^strg);
+	static String^ RemoveSyntax(String ^strg);
+	static int Contains(String ^str, array<String^> ^words);
+	static bool Contains(String ^str, array<String^> ^words, int mistakes);
 	static void WriteWithColors(String ^strg);
 	static void WriteAt(String ^str, int x, int y);
 	static void WriteCenteredAt(String ^str, int x);

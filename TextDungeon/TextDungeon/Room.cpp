@@ -3,6 +3,13 @@
 Room::Room(array<Door^> ^drs, array<DungeonObject^> ^objs, String ^desc) {
 	description = desc;
 	doors = drs;
+	for (int i = 0; i < doors->Length; i++) {
+		if (doors[i]->roomTo == nullptr) {
+			doors[i]->roomTo = this;
+		} else {
+			doors[i]->roomFrom = this;
+		}
+	}
 	objects = objs;
 }
 
@@ -42,9 +49,9 @@ Room::Room() { description = "An empty room"; }
 
 void Room::printDescription() {
 	Writter::WriteCenteredAt("&w:::: YOU SEE YOURSEF IN ::::&x",
-		Console::BufferWidth * .2F, Console::BufferHeight * .35F - 2, Console::BufferWidth * .6F, 3);
-	Writter::WriteCenteredAt(makeDescription(description, doors, objects), Console::BufferWidth * .2F, Console::BufferHeight * .35F + 2,
-		Console::BufferWidth * .6F, Console::BufferHeight * .3);
+		int(Console::BufferWidth * .2F), int(Console::BufferHeight * .1F), int(Console::BufferWidth * .6F), 3);
+	Writter::WriteCenteredAt(makeDescription(description, doors, objects), int(Console::BufferWidth * .2F), int(Console::BufferHeight * .15F),
+		int(Console::BufferWidth * .6F), int(Console::BufferHeight * .8F));
 }
 
 Room::~Room() {
