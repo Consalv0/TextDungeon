@@ -73,10 +73,10 @@ int Writter::Contains(String ^str, array<String^> ^keys) {
 	int count = 0;
 	while (keysE->MoveNext()) {
 		key = safe_cast<String^>(keysE->Current);
-		if (key->IndexOf("DOOR", StringComparison::OrdinalIgnoreCase) == 0) continue;
-		Console::Write(key + " :: ");
+		// Console::Write(key + " :: ");
 		while (strgE->MoveNext()) {
 			entry = safe_cast<String^>(strgE->Current);
+
 			// Console::Write(entry);
 			// System::Threading::Thread::Sleep(200);
 			if (entry->IndexOf(key, StringComparison::OrdinalIgnoreCase) == 0) {
@@ -88,11 +88,13 @@ int Writter::Contains(String ^str, array<String^> ^keys) {
 		strgE->Reset();
 		// Console::WriteLine(" ");
 	}
+	// Console::WriteLine(count);
+	// System::Threading::Thread::Sleep(800);
 	return count;
 }
 bool Writter::Contains(String ^str, array<String^> ^keys, int mistakes) {
 	mistakes = mistakes >= 0 ? mistakes : -mistakes;
-	if (Writter::Contains(str, keys) >= keys->Length - mistakes) {
+	if (Writter::Contains(str, keys) >= ((keys->Length - mistakes) <= 0 ? 1 : keys->Length - mistakes)) {
 		return true;
 	}
 	return false;
@@ -113,6 +115,11 @@ void Writter::WriteWithColors(String ^s) {
 			if (entry->Substring(0, 1) == "m") { colors->Push(ConsoleColor::Magenta); } else
 			if (entry->Substring(0, 1) == "n") { colors->Push(ConsoleColor::Gray); } else
 			if (entry->Substring(0, 1) == "w") { colors->Push(ConsoleColor::White); } else
+			if (entry->Substring(0, 1) == "t") { colors->Push(ConsoleColor::DarkRed); } else
+			if (entry->Substring(0, 1) == "h") { colors->Push(ConsoleColor::DarkGreen); } else
+			if (entry->Substring(0, 1) == "v") { colors->Push(ConsoleColor::DarkCyan); } else
+			if (entry->Substring(0, 1) == "u") { colors->Push(ConsoleColor::DarkYellow); } else
+			if (entry->Substring(0, 1) == ",") { colors->Push(ConsoleColor::DarkMagenta); } else
 			if (entry->Substring(0, 1) == "x") { if (colors->Count > 0) colors->Pop(); } else
 			if (entry->Substring(0, 1) == "!") { Console::ResetColor(); colors->Clear(); } else
 			if (entry->Substring(0, 1) == " ") { Console::Write(entry); continue; } else

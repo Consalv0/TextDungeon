@@ -6,10 +6,11 @@ public:
 	Player();
 	~Player();
 
-	array<DungeonObject^> ^inventory;
+	List<DungeonObject^> ^inventory;
 	Room^ room;
 
-	void printScreenInfo();
-	void parseCommand(String ^command);
+	void PrintScreenInfo();
+	void ParseCommand(String ^command);
+	void PrintInventory();
 };
 

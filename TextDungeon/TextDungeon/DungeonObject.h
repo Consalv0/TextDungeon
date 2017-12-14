@@ -7,8 +7,11 @@ public:
 	~DungeonObject();
 
 	/*** Variables ***/
-	String^ name;
 
 	/*** Methods ***/
+	String^ name;
+	virtual property String^ Name {
+		String^ get(); void set(String^ x);
+	}
 };
 

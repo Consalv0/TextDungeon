@@ -7,5 +7,9 @@ public:
 	Key(String ^name);
 	Key();
 	~Key();
+
+	virtual property String^ Name {
+		String^ get() override; void set(String^ x) override;
+	}
 };
 

@@ -5,16 +5,17 @@ ref class Door;
 ref class Room {
 public:
 	/**  Constructors  **/
-	Room(array<Door^> ^doors, array<DungeonObject^> ^objects, String ^desc);
+	Room(array<Door^> ^doors, array<DungeonObject^> ^objects, String ^desc, String ^name);
 	Room();
 
 	/**  Variables  **/
 	array<Door^> ^doors;
-	array<DungeonObject^> ^objects;
+	List<DungeonObject^> ^objects;
 	String ^description;
+	String ^name;
 
 	/** Methods **/
-	void printDescription();
+	void PrintDescription();
 
 	~Room();
 };
