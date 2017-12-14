@@ -12,6 +12,9 @@ public:
 		gcnew Key("&yKEY MADE OF AN EXTRANGE MATERIAL&x"),   // 05
 		gcnew Key("&yKEY MADE OF GOLD&x"),                   // 06
 		gcnew Key("&yKEY COVERED WITH VINES&x"),             // 07
+	/* Objects */
+		gcnew Weapon("&wROCK&x", "A simple rock", 12),    // 08
+		gcnew DungeonObject("&wBONE&x", "An skeleton bone"), // 09 --> Skeleton loot
 	};
 
 	static array<Door^> ^doors = gcnew array<Door^> {
@@ -39,13 +42,17 @@ public:
 		gcnew Door("&gDOOR MADE OF WOOD&x"),        // 19
 	};
 
+	static array<Enemy^> ^enemies = gcnew array<Enemy^> {
+		gcnew Enemy(50, gcnew array<DungeonObject^>{objects[9]}, "&bEvil Skeleton&x", "This weak enemy confronts you because you have skin") // 00
+	};
+
 	static array<Room^> ^rooms = gcnew array<Room^> {
-		gcnew Room(gcnew array<Door^>{doors[0 ], doors[8 ]           }, gcnew array<DungeonObject^>{objects[0 ]},
-			"", "&wROOM WITH A HOLE IN THE CELING&x"), // 00 <---- Probably the start
+		gcnew Room(gcnew array<Door^>{doors[0 ], doors[8 ]           }, gcnew array<DungeonObject^>{objects[0 ], objects[8 ]},
+			"The room you fallen", "&wYou fallen from here, all the room is covered with pieces of rocks that fallen from the ceiling, all is covered with the soft blue light of the moon. You see two doors and a pedestal made of steel in one corner next to the heavy door&x"), // 00 <---- Probably the start
 		gcnew Room(gcnew array<Door^>{doors[5 ]                      }, gcnew array<DungeonObject^>{           },
 			"", "&wROOM WITH NO FORM&x"), // 01
 		gcnew Room(gcnew array<Door^>{doors[8 ], doors[12]           }, gcnew array<DungeonObject^>{           },
-			"", "&w&x"), // 02
+			"A room full with skeletons, but at least they prentend to be dead", "&wIn one corner you see how a skeleton rises from the pile of dust, &rit takes one bone from his arm and starts running at you&x&x", enemies[0]), // 02
 		gcnew Room(gcnew array<Door^>{doors[0 ], doors[9 ]           }, gcnew array<DungeonObject^>{objects[2 ]},
 			"", "&w&x"), // 03
 		gcnew Room(gcnew array<Door^>{doors[10], doors[9 ], doors[1 ]}, gcnew array<DungeonObject^>{           },
@@ -82,12 +89,12 @@ public:
 			"", "&w&x"), // 19
 	};
 
-	static DungeonObject^ UseObject(String ^name, Room ^room) {
+	static DungeonObject^ TakeObject(String ^name, Room ^room) {
 		if (room == nullptr) return nullptr;
 		int count = 0;
 		DungeonObject ^object;
 		for (int i = 0; i < room->objects->Count; i++) {
-			array<String^> ^objectname = Writter::RemoveSyntax(Writter::RemoveColorSyntax(room->objects[i]->name))->Split(gcnew array<Char>{' '}, StringSplitOptions::RemoveEmptyEntries);
+			array<String^> ^objectname = Writter::RemoveSyntax(Writter::RemoveColorSyntax(room->objects[i]->Name))->Split(gcnew array<Char>{' '}, StringSplitOptions::RemoveEmptyEntries);
 			if (Writter::Contains(name, objectname, 1)) {
 				count++;
 				object = room->objects[i];

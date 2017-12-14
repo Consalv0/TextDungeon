@@ -154,6 +154,7 @@
     <ClInclude Include="Door.h" />
     <ClInclude Include="DungeonObject.h" />
     <ClInclude Include="Dungeon.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Player.h" />
@@ -161,12 +162,14 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Weapon.h" />
     <ClInclude Include="Writter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="DungeonObject.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
@@ -177,6 +180,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TextDungeon.cpp" />
+    <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Writter.cpp" />
   </ItemGroup>
   <ItemGroup>

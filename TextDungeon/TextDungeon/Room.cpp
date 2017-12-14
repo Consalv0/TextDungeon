@@ -2,13 +2,13 @@
 
 Room::Room(array<Door^> ^drs, array<DungeonObject^> ^objs, String ^desc, String ^n) {
 	description = desc;
-	name = n;
+	firstDescription = n;
 	doors = drs;
 	for (int i = 0; i < doors->Length; i++) {
-		if (doors[i]->roomTo == nullptr) {
-			doors[i]->roomTo = this;
+		if (doors[i]->RoomTo == nullptr) {
+			doors[i]->RoomTo = this;
 		} else {
-			doors[i]->roomFrom = this;
+			doors[i]->RoomFrom = this;
 		}
 	}
 
@@ -16,6 +16,26 @@ Room::Room(array<Door^> ^drs, array<DungeonObject^> ^objs, String ^desc, String 
 	for (int i = 0; i < objs->Length; i++) {
 		objects->Add(objs[i]);
 	}
+}
+
+Room::Room(array<Door^> ^drs, array<DungeonObject^> ^objs, String ^desc, String ^n, Enemy ^enemy) {
+	description = desc;
+	firstDescription = n;
+	doors = drs;
+	for (int i = 0; i < doors->Length; i++) {
+		if (doors[i]->RoomTo == nullptr) {
+			doors[i]->RoomTo = this;
+		} else {
+			doors[i]->RoomFrom = this;
+		}
+	}
+
+	objects = gcnew List<DungeonObject^>();
+	for (int i = 0; i < objs->Length; i++) {
+		objects->Add(objs[i]);
+	}
+
+	this->enemy = enemy;
 }
 
 String^ makeDescription(String ^dcrpt, array<Door^> ^drs, array<DungeonObject^> ^objs) {
@@ -32,7 +52,7 @@ String^ makeDescription(String ^dcrpt, array<Door^> ^drs, array<DungeonObject^> 
 		}
 	}
 	if (objs->Length == 1)
-		dcrpt = dcrpt->Insert(0, "Also you see on top of a pedestal ");
+		dcrpt = dcrpt->Insert(0, "Also you see only ");
 	else if (objs->Length > 0)
 		dcrpt = dcrpt->Insert(0, "Also in the ground you see ");
 	for (int i = 0; i < drs->Length; i++) {
@@ -50,7 +70,7 @@ String^ makeDescription(String ^dcrpt, array<Door^> ^drs, array<DungeonObject^> 
 	return dcrpt;
 }
 
-Room::Room() { description = "An empty room"; name = "&EMPTY"; }
+Room::Room() { description = "An empty room"; firstDescription = "&EMPTY"; }
 
 void Room::PrintDescription() {
 	Writter::WriteCenteredAt("&w:::: YOU SEE YOURSEF IN ::::&x",
